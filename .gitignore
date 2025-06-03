@@ -1,0 +1,43 @@
+## Build results
+bin/
+obj/
+
+## User-specific files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+## Visual Studio Code settings
+.vscode/
+
+## ASP.NET Core
+appsettings.*.json
+appsettings.Development.json
+appsettings.Local.json
+secrets.json
+
+## Dependency packages
+*.nupkg
+packages/
+*.snupkg
+
+## Build logs
+*.log
+
+## Others
+.env
+*.db
+*.sqlite
+*.mdb
+*.bak
+
+## dotnet watch
+**/tmp/
+
+## Rider
+.idea/
+
+## OS-specific
+.DS_Store
+Thumbs.db
