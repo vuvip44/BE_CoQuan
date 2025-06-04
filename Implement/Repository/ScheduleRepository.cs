@@ -47,7 +47,7 @@ namespace Lich.api.Implement.Repository
                 _context.Schedules.Remove(schedule);
                 await _context.SaveChangesAsync();
                 return true;
-           }
+            }
             catch (System.Exception e)
             {
                 _logger.LogError(e, $"Error deleting schedule with ID {id}");
@@ -57,13 +57,13 @@ namespace Lich.api.Implement.Repository
 
         public async Task<List<Schedule>> GetPendingSchedulesIdAsync()
         {
-            
+
             try
             {
                 return await _context.Schedules
                     .Include(s => s.CreatedBy)
                     .Where(s => s.Status == ScheduleStatus.Pending)
-                    
+
                     .ToListAsync();
             }
             catch (System.Exception e)
@@ -155,12 +155,26 @@ namespace Lich.api.Implement.Repository
             }
         }
 
+        // public async Task<List<Schedule>> GetSchedulesByWeekAsync(int week)
+        // {
+        //     var startOfWeek = DateTime.Today.AddDays(-7 * week).Date;
+        //     var endWeek = startOfWeek.AddDays(7).Date;
+        //     var schedules = await _context.Schedules
+        //         .Include(s => s.CreatedBy) // Assuming CreatedBy is a navigation property
+        //         .Where(s => s.StartTime >= startOfWeek && s.StartTime < endWeek)
+        //         .OrderBy(s => s.StartTime)
+        //         .ToListAsync();
+        //     return schedules;
+        // }
         public async Task<List<Schedule>> GetSchedulesByWeekAsync(int week)
         {
-            var startOfWeek = DateTime.Today.AddDays(-7 * week).Date;
-            var endWeek = startOfWeek.AddDays(7).Date;
+            var year = DateTime.Today.Year; // hoặc nhận thêm tham số năm nếu cần
+            var firstDayOfYear = new DateTime(year, 1, 1);
+            var startOfWeek = firstDayOfYear.AddDays((week - 1) * 7);
+            var endWeek = startOfWeek.AddDays(7);
+
             var schedules = await _context.Schedules
-                .Include(s => s.CreatedBy) // Assuming CreatedBy is a navigation property
+                .Include(s => s.CreatedBy)
                 .Where(s => s.StartTime >= startOfWeek && s.StartTime < endWeek)
                 .OrderBy(s => s.StartTime)
                 .ToListAsync();
