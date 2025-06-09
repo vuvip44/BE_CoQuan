@@ -37,12 +37,15 @@ namespace Lich.api.Implement.Repository
         {
             try
             {
-                var user = await _context.Users.FindAsync(id);
+                var user = await _context.Users
+                            .Include(u => u.CreatedSchedules)
+                            .FirstOrDefaultAsync(u => u.Id == id);
                 if (user == null)
                 {
                     _logger.LogWarning($"User with ID {id} not found for deletion.");
                     return false;
                 }
+                _context.Schedules.RemoveRange(user.CreatedSchedules);
                 _context.Users.Remove(user);
                 await _context.SaveChangesAsync();
                 return true;

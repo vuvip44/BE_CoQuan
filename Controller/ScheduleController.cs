@@ -126,5 +126,19 @@ namespace Lich.api.Controller
 
             return Ok(new ApiResponse<bool>(200, true, "Schedule status updated successfully."));
         }
+
+        [HttpGet("get-current-user")]
+        [Authorize]
+        public async Task<IActionResult> GetScheduleByCurrentUser()
+        {
+            var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
+            if (userId == 0)
+            {
+                return Unauthorized(new ApiResponse<string>(401, "User dont login"));
+            }
+            var result = await _scheduleService.GetSchedulesByUserIdAsync(userId);
+            return Ok(new ApiResponse<List<ResSchedule>>(200, result, "Get schedules success"));
+        }
+
     }
 }

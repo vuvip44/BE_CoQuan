@@ -2,12 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Lich.api.Model;
 
-namespace Lich.api.Interface.IService
+namespace BE_CoQuan.DTO.Request
 {
-    public interface IRoleService
+    public class ReqUserDto
     {
-
+        public string MyProperty { get; set; }
     }
 }

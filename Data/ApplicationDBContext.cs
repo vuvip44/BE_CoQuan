@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Lich.api.Data
 {
-    public class ApplicationDBContext:DbContext
+    public class ApplicationDBContext : DbContext
     {
         public ApplicationDBContext(DbContextOptions<ApplicationDBContext> options) : base(options)
         {
@@ -31,7 +31,19 @@ namespace Lich.api.Data
             modelBuilder.Entity<Schedule>()
                 .Property(s => s.Status)
                 .HasConversion<string>();
+            modelBuilder.Entity<Schedule>()
+                .HasOne(s => s.CreatedBy)
+                .WithMany(u => u.CreatedSchedules)
+                .HasForeignKey(s => s.CreatedById)
+                .OnDelete(DeleteBehavior.NoAction); // Hạn chế Cascade
+
+            modelBuilder.Entity<Schedule>()
+                .HasOne(s => s.ApprovedBy)
+                .WithMany(u => u.ApprovedSchedules)
+                .HasForeignKey(s => s.ApprovedById)
+                .OnDelete(DeleteBehavior.SetNull);
+
         }
     }
-    
+
 }
