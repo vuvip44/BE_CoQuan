@@ -73,7 +73,7 @@ namespace Lich.api.Implement.Service
             {
                 throw new ArgumentException("Invalid user ID", nameof(userId));
             }
-            return _scheduleRepository.DeleteScheduleAsync(id);
+            return _scheduleRepository.DeleteScheduleAsync(id,userId);
         }
 
         public async Task<List<ResSchedule>> GetPendingSchedulesAsync()
@@ -195,7 +195,35 @@ namespace Lich.api.Implement.Service
             }).ToList();
         }
 
-        public async Task<bool> UpdateScheduleAsync(int id, string status, int userId)
+        public async Task<bool> UpdateScheduleAsync(int id, int userId, ReqSchedule req)
+        {
+            var schedule = await _scheduleRepository.GetScheduleByIdAsync(id);
+            if (schedule == null)
+            {
+                throw new KeyNotFoundException($"Schedule with ID {id} not found");
+            }
+            if (userId <= 0 || userId != schedule.CreatedById)
+            {
+                throw new ArgumentException("Invalid user ID", nameof(userId));
+            }
+
+            schedule.Company = req.LeaderCompany;
+            schedule.Title = req.Title;
+            schedule.Component = req.Component;
+            schedule.StartTime = req.StartTime;
+            schedule.EndTime = req.EndTime;
+            schedule.Location = req.Location;
+            schedule.Note = req.Note;
+
+            var result = await _scheduleRepository.UpdateScheduleAsync(schedule);
+            if (!result)
+            {
+                throw new Exception("Failed to update schedule");
+            }
+            return true;
+        }
+
+        public async Task<bool> UpdateScheduleStatusAsync(int id, string status, int userId)
         {
             var schedule = await _scheduleRepository.GetScheduleByIdAsync(id);
             if (schedule == null)

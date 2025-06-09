@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Lich.api.Data;
+using Lich.api.DTO.Request.Query;
 using Lich.api.Interface.IRepository;
 using Lich.api.Model;
 using Microsoft.EntityFrameworkCore;
@@ -54,6 +55,31 @@ namespace Lich.api.Implement.Repository
             {
                 _logger.LogError(e, $"Error deleting user with ID {id}");
                 return false;
+            }
+        }
+
+        public async Task<IEnumerable<User>> GetAllUsersAsync(QueryUser query)
+        {
+            try
+            {
+                var users = _context.Users
+                        .Include(u => u.Role)
+                        .AsQueryable();
+                if (!string.IsNullOrEmpty(query.Email))
+                {
+                    users = users.Where(s => s.Email == query.Email);
+                }
+                if (!string.IsNullOrEmpty(query.FullName))
+                {
+                    users = users.Where(s => s.FullName == query.FullName);
+                }
+                var result = await users.OrderBy(s => s.Email).ToListAsync();
+                return result;
+            }
+            catch (System.Exception e)
+            {
+                _logger.LogError(e, $"Error retrieving users");
+                return new List<User>();
             }
         }
 

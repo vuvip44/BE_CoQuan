@@ -34,11 +34,11 @@ namespace Lich.api.Implement.Repository
             }
         }
 
-        public async Task<bool> DeleteScheduleAsync(int id)
+        public async Task<bool> DeleteScheduleAsync(int id, int userId)
         {
             try
             {
-                var schedule = await _context.Schedules.FindAsync(id);
+                var schedule = await _context.Schedules.FirstOrDefaultAsync(s=>s.Id==id && s.CreatedById==userId);
                 if (schedule == null)
                 {
                     _logger.LogWarning($"Schedule with ID {id} not found for deletion.");

@@ -12,7 +12,7 @@ namespace Lich.api.Implement.Repository
         Task<Schedule> GetScheduleByIdAsync(int id);
         Task<Schedule> CreateScheduleAsync(Schedule schedule);
         Task<bool> UpdateScheduleAsync(Schedule schedule);
-        Task<bool> DeleteScheduleAsync(int id);
+        Task<bool> DeleteScheduleAsync(int id, int userId);
         Task<List<Schedule>> GetSchedulesByWeekAsync(int week);
 
         Task<List<Schedule>> GetSchedulesBySearchAsync(QueryObject query);

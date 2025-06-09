@@ -14,7 +14,7 @@ namespace BE_CoQuan.DTO.Request.Auth
         [MinLength(6, ErrorMessage = "Password must be at least 6 characters long.")]
         public string NewPassword { get; set; }
         [Required(ErrorMessage = "Confirm Password is required.")]
-        [Compare("Password", ErrorMessage = "Passwords do not match.")]
+        [Compare("NewPassword", ErrorMessage = "Passwords do not match.")]
         public string ConfirmPassword { get; set; }
     }
 }

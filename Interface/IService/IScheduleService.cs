@@ -16,7 +16,8 @@ namespace Lich.api.Interface.IService
         Task<List<ResSchedule>> GetSchedulesBySearchAsync(QueryObject query);
         Task<List<ResSchedule>> GetPendingSchedulesAsync();
         Task<List<ResSchedule>> GetSchedulesByUserIdAsync(int userId);
-        Task<bool> UpdateScheduleAsync(int id, string status, int userId);
+        Task<bool> UpdateScheduleStatusAsync(int id, string status, int userId);
+        Task<bool> UpdateScheduleAsync(int id, int userId, ReqSchedule req);
         Task<bool> DeleteScheduleAsync(int id, int userId);
     }
 }

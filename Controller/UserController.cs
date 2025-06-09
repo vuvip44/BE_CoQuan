@@ -6,9 +6,11 @@ using System.Threading.Tasks;
 using BE_CoQuan.DTO.Request.Auth;
 using Lich.api.Common;
 using Lich.api.DTO.Request.Auth;
+using Lich.api.DTO.Request.Query;
 using Lich.api.DTO.Response.User;
 using Lich.api.Interface.IService;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Lich.api.Controller
@@ -84,5 +86,24 @@ namespace Lich.api.Controller
             return Ok(new ApiResponse<ResUserDto>(200, result, "Create user success"));
         }
 
+        [HttpGet]
+        [Authorize(Roles = "Admin,User")]
+        public async Task<IActionResult> GetAllUsersAsync([FromQuery] QueryUser query)
+        {
+            var result = await _userService.GetAllUsersAsync(query);
+            return Ok(new ApiResponse<List<ResUserDto>>(200, result, "Get all users success"));
+        }
+
+        [HttpGet("{id}")]
+        [Authorize]
+        public async Task<IActionResult> GetUserByIdAsync(int id)
+        {
+            var result = await _userService.GetUserByIdAsync(id);
+            if (result == null)
+            {
+                return NotFound("Schedule not found or could not be updated.");
+            }
+            return Ok(new ApiResponse<ResUserDto>(200, result, "Get user by id success"));
+        }
     }
 }

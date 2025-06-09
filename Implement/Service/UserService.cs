@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using BE_CoQuan.DTO.Request.Auth;
 using Lich.api.DTO.Request.Auth;
+using Lich.api.DTO.Request.Query;
 using Lich.api.DTO.Response.User;
 using Lich.api.Interface.IRepository;
 using Lich.api.Interface.IService;
@@ -58,6 +59,18 @@ namespace Lich.api.Implement.Service
                 throw new KeyNotFoundException($"User with ID {user} not found.");
             }
             return true;
+        }
+
+        public async Task<List<ResUserDto>> GetAllUsersAsync(QueryUser query)
+        {
+            var users = await _userRepository.GetAllUsersAsync(query);
+            return users.Select(u => new ResUserDto
+            {
+                Id = u.Id,
+                Email = u.Email,
+                FullName = u.FullName,
+                RoleId = u.RoleId
+            }).ToList();
         }
 
         public async Task<ResUserDto> GetUserByIdAsync(int userId)
