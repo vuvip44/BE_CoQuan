@@ -63,7 +63,7 @@ namespace Lich.api.Implement.Service
             };
         }
 
-        public Task<bool> DeleteScheduleAsync(int id, int userId)
+        public async Task<bool> DeleteScheduleAsync(int id, int userId)
         {
             if (id <= 0)
             {
@@ -73,7 +73,12 @@ namespace Lich.api.Implement.Service
             {
                 throw new ArgumentException("Invalid user ID", nameof(userId));
             }
-            return _scheduleRepository.DeleteScheduleAsync(id,userId);
+            var schedule = await _scheduleRepository.GetScheduleByIdAsync(id);
+            if (schedule.Status != ScheduleStatus.Pending)
+            {
+                throw new Exception("Failed to delete schedule");
+            }
+            return await _scheduleRepository.DeleteScheduleAsync(id, userId);
         }
 
         public async Task<List<ResSchedule>> GetPendingSchedulesAsync()
@@ -205,6 +210,10 @@ namespace Lich.api.Implement.Service
             if (userId <= 0 || userId != schedule.CreatedById)
             {
                 throw new ArgumentException("Invalid user ID", nameof(userId));
+            }
+            if (schedule.Status != ScheduleStatus.Pending)
+            {
+                throw new Exception("Failed to delete schedule");
             }
 
             schedule.Company = req.LeaderCompany;
